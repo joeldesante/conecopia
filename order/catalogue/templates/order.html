@@ -1,0 +1,34 @@
+{% load humanize %}
+{% load filters %}
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Order</title>
+    </head>
+    <body>
+        <h1>Conecopia Gelato</h1>
+
+        <h2>Available products</h2>
+        <section>
+            {% for product in products %}
+
+                <div>
+
+                    {% if product.quantity <= 0 %}
+                        << SOLD OUT >>
+                    {% endif %}
+                    <h4>{{ product.name }}</h4>
+                    <p>
+                        ${{ product.price|divide:100|floatformat:2|intcomma }}
+                    </p>
+                    <p>{{ product.description }}</p>
+
+                </div>
+                
+            {% endfor %}
+        </section>
+    </body>
+</html>
