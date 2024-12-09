@@ -11,3 +11,25 @@ def index(request):
     }
 
     return HttpResponse(template.render(context, request))
+
+def product(request, id):
+
+    product = Product.objects.get(id = id)
+    template = loader.get_template('product.html')
+    context = {
+        'product': product
+    }
+
+    return HttpResponse(template.render(context, request))
+
+def cart(request):
+    template = loader.get_template('cart.html')
+    return HttpResponse(template.render())
+
+def checkout(request):
+    template = loader.get_template('checkout.html')
+    return HttpResponse(template.render())
+
+def receipt(request):
+    template = loader.get_template('receipt.html')
+    return HttpResponse(template.render())

@@ -1,34 +1,39 @@
+{% extends "master.html" %}
+
+{% block title %}
+    Flavor Name - REPLACE ME
+{% endblock %}
+
 {% load humanize %}
 {% load filters %}
 
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Order</title>
-    </head>
-    <body>
+{% block content %}
         <h1>Conecopia Gelato</h1>
 
-        <h2>Available products</h2>
+        <h2>Flavors for sale</h2>
         <section>
-            {% for product in products %}
 
-                <div>
+            <div class="columns">
+                {% for product in products %}
 
-                    {% if product.quantity <= 0 %}
-                        << SOLD OUT >>
-                    {% endif %}
-                    <h4>{{ product.name }}</h4>
-                    <p>
-                        ${{ product.price|divide:100|floatformat:2|intcomma }}
-                    </p>
-                    <p>{{ product.description }}</p>
+                    <a href="./product/{{ product.id }}" aria-label="One pint of {{product.name}} gelato.">
+                        <div class="column">
 
-                </div>
-                
-            {% endfor %}
+                            <img src="https://picsum.photos/200" alt="One pint of {{ product.name }} gelato." />
+                            <h3>{{ product.name }}</h3>
+                            <p>
+                                ${{ product.price|divide:100|floatformat:2|intcomma }}
+                            </p>
+                            <p>{{ product.description }}</p>
+
+                            {% if product.quantity <= 0 %}
+                                SOLD OUT
+                            {% endif %}
+
+                        </div>
+                    </a>
+
+                {% endfor %}
+            </div>
         </section>
-    </body>
-</html>
+{% endblock content %}
