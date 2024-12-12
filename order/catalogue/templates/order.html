@@ -8,32 +8,32 @@
 {% load filters %}
 
 {% block content %}
-        <h1>Conecopia Gelato</h1>
+<h1>Conecopia Gelato</h1>
 
-        <h2>Flavors for sale</h2>
-        <section>
+<h2>Flavors for sale</h2>
+<section>
 
-            <div class="columns">
-                {% for product in products %}
+    <div class="columns">
+        {% for product in products %}
 
-                    <a href="./product/{{ product.id }}" aria-label="One pint of {{product.name}} gelato.">
-                        <div class="column">
+            <a href="./product/{{ product.id }}" aria-label="One pint of {{product.name}} gelato.">
+                <div class="column">
 
-                            <img src="https://picsum.photos/200" alt="One pint of {{ product.name }} gelato." />
-                            <h3>{{ product.name }}</h3>
-                            <p>
-                                ${{ product.price|divide:100|floatformat:2|intcomma }}
-                            </p>
-                            <p>{{ product.description }}</p>
+                    <img src="https://picsum.photos/200" alt="One pint of {{ product.name }} gelato." />
+                    <h3>{{ product.name }}</h3>
+                    <p>
+                        ${{ product.price|divide:100|floatformat:2|intcomma }}
+                    </p>
+                    <p>{{ product.description }}</p>
 
-                            {% if product.quantity <= 0 %}
-                                SOLD OUT
-                            {% endif %}
+                    {% if product.quantity <= 0 %}
+                        SOLD OUT
+                    {% endif %}
 
-                        </div>
-                    </a>
+                </div>
+            </a>
 
-                {% endfor %}
-            </div>
-        </section>
+        {% endfor %}
+    </div>
+</section>
 {% endblock content %}
