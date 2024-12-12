@@ -1,6 +1,10 @@
 from django.http import HttpResponse
 from django.template import loader
 from .models import Product
+import stripe
+
+# Do this with an ENV or something
+stripe.api_key = "sk_test_51QUwDHCjQ55y9LkRd758BA9JwmiCpNCNK3KqZKle5gObVaIxjGhlWuQtvVqRstRFZVbHVHJTOx72wp7YEfX399wT009GxOrUAk"
 
 def index(request):
 
@@ -27,8 +31,17 @@ def cart(request):
     return HttpResponse(template.render())
 
 def checkout(request):
+
+    intent = stripe.PaymentIntent.create(
+        amount=1099,
+        currency="usd",
+    )
+
     template = loader.get_template('checkout.html')
-    return HttpResponse(template.render())
+    context = {
+        'client_secret': intent.client_secret
+    }
+    return HttpResponse(template.render(context, request))
 
 def receipt(request):
     template = loader.get_template('receipt.html')

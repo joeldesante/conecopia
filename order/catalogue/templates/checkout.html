@@ -15,6 +15,49 @@
 <p>Full name</p>
 <p>email</p>
 <p>phone number</p>
-<p>Billing Address</p>
-<p>Card Details</p>
+
+<div id="bill-element"></div>
+<div id="pay-element"></div>
+
+<button id="confirm">Checkout</button>
+
+<script>
+    var stripe = Stripe('pk_test_51QUwDHCjQ55y9LkRihf15CeUEOjj3F1YSEGdbI0vVCrRmTMqYv328SRIMbqHfsoeIDXMkuGlyvCvbsQPgkBVtwvB00W1jvzaHo');
+
+    var elements = stripe.elements({
+        clientSecret: '{{client_secret}}',
+    });
+
+    var paymentElement = elements.create('payment');
+    var billingAddressElement = elements.create('address', {
+        mode: 'billing',
+        fields: {
+            phone: 'always'
+        },
+        validation: {
+            phone: {
+                required: 'always'
+            }
+        }
+    });
+
+    paymentElement.mount("#pay-element")
+    billingAddressElement.mount("#bill-element")
+
+    document.getElementById("confirm").onclick = () => {
+        stripe.confirmPayment({
+            elements,
+            confirmParams: {
+                // Return URL where the customer should be redirected after the PaymentIntent is confirmed.
+                return_url: 'https://example.com',
+            },
+        })
+        .then(function(result) {
+            if (result.error) {
+                // Inform the customer that there was an error.
+            }
+        })
+    }
+
+</script>
 {% endblock content %}
