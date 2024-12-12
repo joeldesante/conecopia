@@ -1,5 +1,8 @@
 {% extends "master.html" %}
 
+{% load humanize %}
+{% load filters %}
+
 {% block title %}Shopping Cart{% endblock title %}
 
 {% block content %}
@@ -13,9 +16,14 @@
 
 <h1>Your Shopping Cart</h1>
 <ul>
-    <li>Item one</li>
-    <li>2</li>
-    <li>3</li>
-    <li>4</li>
+    {% for item in shopping_cart.items %}
+        <li>
+            {{ item.product.name }} |
+            QTY: {{ item.quantity }} |
+            ${{ item.total_price|divide:100|floatformat:2|intcomma }}
+        </li>
+    {% endfor %}
+
+    <p><strong>Total:</strong> ${{ total_order_price|divide:100|floatformat:2|intcomma }}</p>
 </ul>
 {% endblock content %}

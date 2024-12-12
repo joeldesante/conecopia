@@ -5,23 +5,82 @@
 {% endblock %}
 
 {% block content %}
-    <nav class="breadcrumb has-succeeds-separator" aria-label="breadcrumbs">
-        <ul>
-            <li><a href="/order">Conecopia's Menu</a></li>
-            <li class="is-active"><a href="#" aria-current="page">{{ product.name }}</a></li>
-        </ul>
-    </nav>
+<nav class="breadcrumb has-succeeds-separator" aria-label="breadcrumbs">
+    <ul>
+        <li><a href="/order">Conecopia's Menu</a></li>
+        <li class="is-active"><a href="#" aria-current="page">{{ product.name }}</a></li>
+    </ul>
+</nav>
 
-    <section>
-        <h1>{{ product.name }}</h1>
-        <p>{{ product.description }}
-    </section>
-    <section>
-        <div class="control">
-            <button class="button">-</button>
-            <input class="input" type="number" value="1" />
-            <button class="button">+</button>
-        </div>
-        <button class="button is-primary">Add to Cart</button>
-    </section>
+<section>
+    <h1>{{ product.name }}</h1>
+    <p>{{ product.description }}
+</section>
+<section>
+    <div class="control">
+        <button id="quantity-subtract" class="button">-</button>
+        <input class="input" type="number" value="1" min="1" max="99" id="quantity" />
+        <button id="quantity-add" class="button">+</button>
+    </div>
+    <button id="add-to-cart" class="button is-primary">Add to Cart</button>
+</section>
+
+<script>
+    const quantityInput = document.getElementById("quantity");
+    const addToCartButton = document.getElementById("add-to-cart");
+    const quantityAdd = document.getElementById("quantity-add");
+    const quantitySubtract = document.getElementById("quantity-subtract");
+
+    function addToNumberInputValue(input, valueToAdd) {
+        if(input.type != "number") { throw new Error(`Invalid input type of ${input.type}. Expected 'number'.`); }
+        input.value = parseInt(input.value) + valueToAdd
+    }
+
+    function clampNumberInput(input, min, max) {
+        if(input.type != "number") { throw new Error(`Invalid input type of ${input.type}. Expected 'number'.`); }
+        if(parseInt(input.value) < min) { input.value = min }
+        if(parseInt(input.value) > max) { input.value = max }
+    }
+
+    quantityAdd.onclick = () => { 
+        addToNumberInputValue(quantityInput, 1);
+        clampNumberInput(quantityInput, 1, 99);
+    }
+    
+    quantitySubtract.onclick = () => { 
+        addToNumberInputValue(quantityInput, -1);
+        clampNumberInput(quantityInput, 1, 99);
+    }
+
+    quantityInput.oninput = () => clampNumberInput(quantityInput, 0, 99);
+
+    addToCartButton.onclick = () => {
+        // 1. Create a AJAX request to add the item to cart
+        const data = new FormData();
+        data.append("csrfmiddlewaretoken", "{{ csrf_token }}");
+        data.append("product_id", "{{ product.id }}");
+        data.append("quantity", quantityInput.value);
+
+        addToCartButton.disabled = true;
+        addToCartButton.classList.add("is-loading");
+
+        const addToCartRequest = fetch("/order/functions/add_product_to_cart", {
+            method: "POST",
+            body: data
+        }).then((response) => {
+            // 2. If the AJAX request succeeds (200 OK) then redirect the user to /order
+            if(!response.ok) {
+                throw new Error(response.statusText);
+            }
+            window.location.href = "/order"
+        }).catch((err) => {
+            // 3. Otherwise notify the user of the error
+            console.warn(err)
+        }).finally(() => {
+            addToCartButton.classList.remove("is-loading");
+            addToCartButton.disabled = false;
+        });
+
+    }
+</script>
 {% endblock content %}
