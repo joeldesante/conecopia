@@ -114,5 +114,4 @@ def add_product_to_cart(request):
 
     # Save and quit
     request.session.modified = True
-    
-    return JsonResponse()
+    return JsonResponse({})

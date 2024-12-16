@@ -24,6 +24,6 @@
         </li>
     {% endfor %}
 
-    <p><strong>Total:</strong> ${{ total_order_price|divide:100|floatformat:2|intcomma }}</p>
+    <p><strong>Total:</strong> ${{ shopping_cart.total_order_price|divide:100|floatformat:2|intcomma }}</p>
 </ul>
 {% endblock content %}
