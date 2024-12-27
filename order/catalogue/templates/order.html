@@ -8,32 +8,99 @@
 {% load filters %}
 
 {% block content %}
-<h1>Conecopia Gelato</h1>
+<h1 class="text-3xl">Conecopia Gelato</h1>
+
+
+<!-- Navigation Toggle -->
+<div class="py-16 text-center">
+    <button type="button" 
+    class="py-2 px-3 inline-flex justify-center items-center gap-x-2 text-start bg-gray-800 border border-gray-800 text-white text-sm font-medium rounded-lg shadow-sm align-middle hover:bg-gray-950 focus:outline-none focus:bg-gray-900 :bg-white" 
+    aria-haspopup="dialog" 
+    aria-expanded="false" 
+    aria-controls="shopping-cart-sidebar" 
+    aria-label="Toggle navigation" 
+    data-hs-overlay="#shopping-cart-sidebar">
+      Open
+    </button>
+  </div>
+  <!-- End Navigation Toggle -->
+  
+<div 
+    id="shopping-cart-sidebar" 
+    class="hs-overlay hs-overlay-open:translate-x-0 hidden translate-x-full fixed top-0 end-0 transition-all duration-300 transform h-full max-w-xs w-full z-[80] bg-white border-s" 
+    role="dialog" 
+    tabindex="-1" 
+    aria-labelledby="shopping-cart-label"
+>
+    <div class="flex justify-between items-center py-3 px-4 border-b">
+      
+        <h3 id="shopping-cart-label" class="font-bold text-gray-800">
+            Shopping Cart
+        </h3>
+
+        <button 
+            type="button" 
+            class="size-8 inline-flex justify-center items-center gap-x-2 rounded-full border border-transparent bg-gray-100 text-gray-800 hover:bg-gray-200 focus:outline-none focus:bg-gray-200 disabled:opacity-50 disabled:pointer-events-none" 
+            aria-label="Close" 
+            data-hs-overlay="#shopping-cart-sidebar"
+        >
+            <span class="sr-only">Close</span>
+            <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 6 6 18"></path>
+                <path d="m6 6 12 12"></path>
+            </svg>
+        </button>
+
+    </div>
+
+    <div class="flex flex-col">
+        {% for item in shopping_cart.items %} 
+            <div class="flex flex-col px-4 py-2 gap-1">
+                <p class="text-sm">{{ item.product.name }}</p>
+                <p class="text-xs text-neutral-600">Qty: {{ item.quantity }}</p>
+                <p class="text-sm">${{ item.total_price|divide:100|floatformat:2|intcomma }}</p>
+                <a href="javascript:void(0);" class="text-xs">Remove</a>
+            </div>
+        {% endfor %}
+    </div>
+
+    <div class="flex flex-col px-4 py-3 border-t gap-4">
+        <p class="text-md font-semibold">Total ${{ shopping_cart.total_order_price|divide:100|floatformat:2|intcomma }}</p>
+        <div class="grid grid-cols-2 gap-2">
+            <a class="px-4 py-2 rounded border bg-neutral-100 text-center text-sm font-medium" href="/order/cart">View Cart</a>
+            <a class="px-4 py-2 rounded bg-blue-600 text-white text-center text-sm font-medium" href="/order/checkout">Checkout</a>
+        </div>
+    </div>
+
+</div>
 
 <h2>Flavors for sale</h2>
 <section>
 
-    <div class="columns">
+    <div class="grid grid-cols-6 gap-4">
+
         {% for product in products %}
+            <div>
+                <a href="./product/{{ product.id }}" aria-label="One pint of {{product.name}} gelato.">
 
-            <a href="./product/{{ product.id }}" aria-label="One pint of {{product.name}} gelato.">
-                <div class="column">
+                        <img 
+                            src="https://picsum.photos/200" 
+                            alt="One pint of {{ product.name }} gelato." 
+                            class="w-full h-auto rounded"
+                        />
 
-                    <img src="https://picsum.photos/200" alt="One pint of {{ product.name }} gelato." />
-                    <h3>{{ product.name }}</h3>
-                    <p>
-                        ${{ product.price|divide:100|floatformat:2|intcomma }}
-                    </p>
-                    <p>{{ product.description }}</p>
+                        <div class="mt-3">
+                            <h4 class="font-medium">{{ product.name }}</h4>
+                            <p class="text-sm">${{ product.price|divide:100|floatformat:2|intcomma }}</p>
+                        </div>
+                        {% if product.quantity <= 0 %}
+                            SOLD OUT
+                        {% endif %}
 
-                    {% if product.quantity <= 0 %}
-                        SOLD OUT
-                    {% endif %}
-
-                </div>
-            </a>
-
+                </a>                
+            </div>
         {% endfor %}
+
     </div>
 </section>
 {% endblock content %}

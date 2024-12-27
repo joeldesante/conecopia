@@ -1,9 +1,12 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
+    <link rel="stylesheet" href="{% static 'master.css' %}">
+    <script src="{% static 'preline.js' %}"></script>
     <script src="https://js.stripe.com/v3/"></script>
   <title>{% block title %}{% endblock %}</title>
 </head>
