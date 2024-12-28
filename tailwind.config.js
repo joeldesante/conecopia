@@ -2,7 +2,11 @@
 module.exports = {
   content: ["./order/**/*.html"],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        sans: ['"Montserrat"', 'sans-serif'],
+      }
+    },
   },
   plugins: [
     require('@tailwindcss/forms'),
