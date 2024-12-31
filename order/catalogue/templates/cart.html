@@ -19,7 +19,7 @@
     {% for item in shopping_cart.items %}
         <li>
             {{ item.product.name }} |
-            QTY: {{ item.quantity }} |
+            Qty: {{ item.quantity }} |
             ${{ item.total_price|divide:100|floatformat:2|intcomma }}
         </li>
     {% endfor %}
