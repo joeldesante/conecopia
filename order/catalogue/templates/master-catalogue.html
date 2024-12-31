@@ -8,8 +8,45 @@
 {% load filters %}
 
 {% block navigation %}
-<nav class="flex flex-row justify-between p-4">
-    <a href="/" class="font-bold text-xl">CONECOPIA GELATO</a>
+<nav class="flex flex-row justify-between items-center p-4 px-0 border-b mb-2">
+    <div class="flex gap-8 items-center">
+        <a 
+            href="/order" 
+            class="font-bold text-xl flex gap-[0.5px]
+                [&>*]:transition [&>*]:transition-all [&>*]:ease-in-out 
+                [&>*]:m-0 [&>*]:text-black
+
+                [&>*:nth-child(7n+1)]:hover:text-red-700
+                [&>*:nth-child(7n+2)]:hover:text-orange-600
+                [&>*:nth-child(7n+3)]:hover:text-yellow-500
+                [&>*:nth-child(7n+4)]:hover:text-green-600
+                [&>*:nth-child(7n+5)]:hover:text-blue-600
+                [&>*:nth-child(7n+6)]:hover:text-indigo-700
+                [&>*:nth-child(7n+7)]:hover:text-violet-700
+            "
+        >
+            <span class="delay-[0ms] duration-300">C</span>
+            <span class="delay-[20ms] duration-300">O</span>
+            <span class="delay-[40ms] duration-300">N</span>
+            <span class="delay-[60ms] duration-300">E</span>
+            <span class="delay-[80ms] duration-300">C</span>
+            <span class="delay-[100ms] duration-300">O</span>
+            <span class="delay-[120ms] duration-300">P</span>
+            <span class="delay-[140ms] duration-300">I</span>
+            <span class="delay-[160ms] duration-300">A</span>
+            &nbsp;
+            <span class="delay-[180ms] duration-300">G</span>
+            <span class="delay-[200ms] duration-300">E</span>
+            <span class="delay-[220ms] duration-300">L</span>
+            <span class="delay-[240ms] duration-300">A</span>
+            <span class="delay-[260ms] duration-300">T</span>
+            <span class="delay-[280ms] duration-300">O</span>
+        </a>
+        <ol class="inline-flex gap-4 underline underline-offset-4">
+            <li class="hover:text-red-500"><a href="/order">Flavors Menu</a></li>
+            <li class="hover:text-red-500"><a href="/">About us</a></li>
+        </ol>
+    </div>
     <button type="button" 
         class="py-2 px-3 inline-flex justify-center items-center gap-x-2 text-start bg-gray-800 border border-gray-800 text-white text-sm font-medium rounded-lg shadow-sm align-middle hover:bg-gray-950 focus:outline-none focus:bg-gray-900 :bg-white" 
         aria-haspopup="dialog" 
