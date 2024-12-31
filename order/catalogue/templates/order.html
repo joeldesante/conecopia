@@ -1,35 +1,55 @@
 {% extends "master-catalogue.html" %}
 
 {% block title %}
-    Flavor Name - AYYY
+    Pre-Order Gelato - Conecopia
 {% endblock %}
 
 {% load humanize %}
 {% load filters %}
 
 {% block content %}
-<h1 class="text-3xl">Conecopia Gelato</h1>
 
-<h2>Flavors for sale</h2>
 <section>
-    <div class="grid grid-cols-6 gap-4">
+    <h1 class="mb-4 text-2xl font-semibold">This weeks flavor selection</h2>
+    <div class="grid sm:md:grid-cols-1 md:grid-cols-4 lg:grid-cols-6 gap-4">
         {% for product in products %}
             <div>
                 <a href="./product/{{ product.id }}" aria-label="One pint of {{product.name}} gelato.">
+
+                    <div class="relative">
+                        {% if product.quantity <= 0 %}
+                            <span
+                                class="absolute top-0 right-0 p-2 py-1 bg-neutral-100 shadow text-black text-xs font-bold m-1 opacity-75 rounded-full flex items-center border"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-5 inline mr-1">
+                                    <path fill-rule="evenodd" d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Zm-8-5a.75.75 0 0 1 .75.75v4.5a.75.75 0 0 1-1.5 0v-4.5A.75.75 0 0 1 10 5Zm0 10a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z" clip-rule="evenodd" />
+                                </svg>
+                                Sorry, Sold Out
+                            </span>
+                        {% endif %}
+
+                        {% if product.quantity <= 5 and product.quantity > 0 %}
+                            <span
+                                class="absolute top-0 right-0 p-2 py-1 bg-neutral-100 shadow text-black text-xs font-bold m-1 opacity-75 rounded-full flex items-center border"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-5 inline mr-1">
+                                    <path fill-rule="evenodd" d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Zm-8-5a.75.75 0 0 1 .75.75v4.5a.75.75 0 0 1-1.5 0v-4.5A.75.75 0 0 1 10 5Zm0 10a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z" clip-rule="evenodd" />
+                                </svg>
+                                Only {{ product.quantity }} Left In Stock
+                            </span>
+                        {% endif %}
 
                         <img 
                             src="https://picsum.photos/200" 
                             alt="One pint of {{ product.name }} gelato." 
                             class="w-full h-auto rounded"
                         />
+                    </div>
 
                         <div class="mt-3">
                             <h4 class="font-medium">{{ product.name }}</h4>
                             <p class="text-sm">${{ product.price|divide:100|floatformat:2|intcomma }}</p>
                         </div>
-                        {% if product.quantity <= 0 %}
-                            SOLD OUT
-                        {% endif %}
                 </a>                
             </div>
         {% endfor %}

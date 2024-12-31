@@ -10,13 +10,17 @@
     <script src="https://js.stripe.com/v3/"></script>
   <title>{% block title %}{% endblock %}</title>
 </head>
-<body>
+<body class="flex justify-center">
+
+<div class="flex flex-col justify-center max-w-screen-xl">
 
 {% block navigation %}
 {% endblock %}
 
 {% block content %}
 {% endblock %}
+
+</div>
 
 </body>
 </html>
