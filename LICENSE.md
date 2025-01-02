@@ -1,4 +1,4 @@
-# COPYRIGHT 2025. JOEL DESANTE. ALL RIGHTS RESERVED.
+# © COPYRIGHT 2025, JOEL DESANTE, ALL RIGHTS RESERVED.
 
 This software is not to be used for commercial or personal purposes by anyone except for the copyright holders Joel DeSante and exclusive license holders Conecopia Gelato LLC.
 
