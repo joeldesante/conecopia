@@ -11,7 +11,7 @@
 <nav class="flex flex-row justify-between items-center p-4 px-0 border-b mb-2">
     <div class="flex gap-8 items-center">
         <a 
-            href="/order" 
+            href="/" 
             class="font-bold text-xl flex gap-[0.5px]
                 [&>*]:transition [&>*]:transition-all [&>*]:ease-in-out 
                 [&>*]:m-0 [&>*]:text-black
@@ -42,19 +42,25 @@
             <span class="delay-[260ms] duration-300">T</span>
             <span class="delay-[280ms] duration-300">O</span>
         </a>
-        <ol class="inline-flex gap-4 underline underline-offset-4">
-            <li class="hover:text-red-500"><a href="/order">Flavors Menu</a></li>
-            <li class="hover:text-red-500"><a href="/">About us</a></li>
+        <ol class="inline-flex gap-4">
+            <li class="text-sm hover:text-red-600"><a href="/order">Flavors Menu</a></li>
+            <li class="text-sm hover:text-red-600"><a href="/">About us</a></li>
         </ol>
     </div>
     <button type="button" 
-        class="py-2 px-3 inline-flex justify-center items-center gap-x-2 text-start bg-gray-800 border border-gray-800 text-white text-sm font-medium rounded-lg shadow-sm align-middle hover:bg-gray-950 focus:outline-none focus:bg-gray-900 :bg-white" 
+        class="inline-flex justify-center items-center gap-x-2 text-start text-black text-sm font-medium align-middle" 
         aria-haspopup="dialog" 
         aria-expanded="false" 
         aria-controls="shopping-cart-sidebar" 
         aria-label="Toggle navigation" 
         data-hs-overlay="#shopping-cart-sidebar">
-        Cart
+        
+        {{ shopping_cart.total_order_quantity }}
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
+            <path fill-rule="evenodd" d="M7.5 6v.75H5.513c-.96 0-1.764.724-1.865 1.679l-1.263 12A1.875 1.875 0 0 0 4.25 22.5h15.5a1.875 1.875 0 0 0 1.865-2.071l-1.263-12a1.875 1.875 0 0 0-1.865-1.679H16.5V6a4.5 4.5 0 1 0-9 0ZM12 3a3 3 0 0 0-3 3v.75h6V6a3 3 0 0 0-3-3Zm-3 8.25a3 3 0 1 0 6 0v-.75a.75.75 0 0 1 1.5 0v.75a4.5 4.5 0 1 1-9 0v-.75a.75.75 0 0 1 1.5 0v.75Z" clip-rule="evenodd" />
+        </svg>
+          
+
     </button>
 </nav>
 
@@ -73,7 +79,7 @@
 
         <button 
             type="button" 
-            class="size-8 inline-flex justify-center items-center gap-x-2 rounded-full border border-transparent bg-gray-100 text-gray-800 hover:bg-gray-200 focus:outline-none focus:bg-gray-200 disabled:opacity-50 disabled:pointer-events-none" 
+            class="size-8 inline-flex justify-center items-center gap-x-2 rounded-full border border-transparent bg-gray-100 text-gray-800 hover:bg-gray-200 focus:bg-gray-200 disabled:opacity-50 disabled:pointer-events-none" 
             aria-label="Close" 
             data-hs-overlay="#shopping-cart-sidebar"
         >
@@ -92,7 +98,7 @@
                 <p class="text-sm">{{ item.product.name }}</p>
                 <p class="text-xs text-neutral-600">Qty: {{ item.quantity }}</p>
                 <p class="text-sm">${{ item.total_price|divide:100|floatformat:2|intcomma }}</p>
-                <a href="javascript:void(0);" class="text-xs">Remove</a>
+                <a href="javascript:void(0);" class="text-xs underline underline-offset-3 hover:text-red-600 active:text-red-700">Remove</a>
             </div>
         {% endfor %}
     </div>

@@ -17,6 +17,7 @@ def _get_cart_context(request) -> dict:
     products = Product.objects.filter(id__in=session_cart_data.keys())
 
     total_order_price = 0
+    total_order_quantity = 0
     rendered_shopping_cart = []
     for product in products:
         cart_item = {}
@@ -24,12 +25,14 @@ def _get_cart_context(request) -> dict:
         cart_item["quantity"] = int(session_cart_data[str(product.id)])
         cart_item["total_price"] = product.price * cart_item["quantity"]
         rendered_shopping_cart.append(cart_item)
-
+        
+        total_order_quantity = total_order_quantity + cart_item["quantity"]
         total_order_price = total_order_price + cart_item["total_price"]
 
     return {
         "items": rendered_shopping_cart,
-        "total_order_price": total_order_price
+        "total_order_price": total_order_price,
+        "total_order_quantity": total_order_quantity
     }
 
 
