@@ -1282,6 +1282,21 @@ select{
   padding-bottom: 0.75rem;
 }
 
+.px-12{
+  padding-left: 3rem;
+  padding-right: 3rem;
+}
+
+.px-\[250px\]{
+  padding-left: 250px;
+  padding-right: 250px;
+}
+
+.px-\[150px\]{
+  padding-left: 150px;
+  padding-right: 150px;
+}
+
 .text-center{
   text-align: center;
 }
