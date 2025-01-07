@@ -40,7 +40,7 @@
                         {% endif %}
 
                         <img 
-                            src="https://picsum.photos/200" 
+                            src="{{ product.thumbnail_url|default:"/static/NOIMAGE.png" }}" 
                             alt="One pint of {{ product.name }} gelato." 
                             class="w-full h-auto rounded"
                         />

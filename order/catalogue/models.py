@@ -5,6 +5,8 @@ from datetime import datetime
 class Product(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField()
+    thumbnail_url = models.TextField(blank=True)
+    images = models.JSONField(default=list, blank=True)
     price = models.PositiveIntegerField(default=0)
     quantity = models.PositiveIntegerField(default=0)
     
