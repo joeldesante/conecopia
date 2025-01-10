@@ -5,7 +5,7 @@ This is the Conecopia Gelato e-commerce platform. This platform is meant to repl
 
 ## Technical Stack
 
-### Front End**
+### Front End
 
 #### Standard HTML/CSS (No Frameworks)
 I chose to use no frontend framework for this project because I felt that Django's built in templating syntax in combination with JQuery and vanilla JavaScript would be sufficent to all of the dynamic needs of this application. I also didn't want to use Django as a REST server as I wanted to experience the MVC architechture style that Django is known for.
