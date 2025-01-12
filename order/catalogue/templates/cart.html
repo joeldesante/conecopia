@@ -22,23 +22,24 @@
     </li>
 </ol>
 
-<nav class="breadcrumb has-succeeds-separator" aria-label="breadcrumbs">
-    <ul>
-        <li><a href="/order">Conecopia's Menu</a></li>
-        <li class="is-active"><a href="#" aria-current="page">Shopping Cart</a></li>
-    </ul>
-</nav>
-
-<h1>Your Shopping Cart</h1>
-<ul>
+<h1 class="text-xl font-bold">Your Shopping Cart</h1>
+<section class="flex flex-col gap-4 mt-4 mb-4">
     {% for item in shopping_cart.items %}
-        <li>
-            {{ item.product.name }} |
-            Qty: {{ item.quantity }} |
-            ${{ item.total_price|divide:100|floatformat:2|intcomma }}
-        </li>
+        <div>
+            <div class="flex flex-row justify-between">
+                <h4 class="font-medium">{{ item.product.name }}</h4>
+                <p>${{ item.total_price|divide:100|floatformat:2|intcomma }}</p>
+            </div>
+            <div class="flex flex-row justify-between">
+                <div>
+                    <p class="text-sm">Qty: {{ item.quantity }}</p>
+                </div>
+                <div class="text-sm hover:text-red-600">
+                    <a href="javascript:void(0)" onclick='removeItemFromCart({{ item.product.id }})'>Remove</a>
+                </div>
+            </div>
+        </div>
     {% endfor %}
-
-    <p><strong>Total:</strong> ${{ shopping_cart.total_order_price|divide:100|floatformat:2|intcomma }}</p>
-</ul>
+</section>
+<p><strong>Total:</strong> ${{ shopping_cart.total_order_price|divide:100|floatformat:2|intcomma }}</p>
 {% endblock content %}

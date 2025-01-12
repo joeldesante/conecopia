@@ -8,6 +8,33 @@
 {% load filters %}
 
 {% block navigation %}
+
+<script>
+
+    function removeItemFromCart(productId) {
+
+        // 1. Create a AJAX request to add the item to cart
+        const data = new FormData();
+        data.append("csrfmiddlewaretoken", "{{ csrf_token }}");
+        data.append("product_id", productId.toString());
+
+        const addToCartRequest = fetch("/order/functions/remove_product_from_cart", {
+            method: "POST",
+            body: data
+        }).then((response) => {
+            // 2. If the AJAX request succeeds (200 OK) then redirect the user to /order
+            if(!response.ok) {
+                throw new Error(response.statusText);
+            }
+            window.location.href = window.location.href
+        }).catch((err) => {
+            // 3. Otherwise notify the user of the error
+            console.warn(err)
+        })
+
+    }
+</script>
+
 <nav class="flex flex-row justify-between items-center p-4 px-0 border-b mb-2">
     <div class="flex gap-8 items-center">
         <a 
@@ -98,7 +125,7 @@
                 <p class="text-sm">{{ item.product.name }}</p>
                 <p class="text-xs text-neutral-600">Qty: {{ item.quantity }}</p>
                 <p class="text-sm">${{ item.total_price|divide:100|floatformat:2|intcomma }}</p>
-                <a href="javascript:void(0);" class="text-xs underline underline-offset-3 hover:text-red-600 active:text-red-700">Remove</a>
+                <a href="javascript:void(0);" onclick='removeItemFromCart({{ item.product.id }})' class="text-xs underline underline-offset-3 hover:text-red-600 active:text-red-700">Remove</a>
             </div>
         {% endfor %}
     </div>

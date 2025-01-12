@@ -118,3 +118,22 @@ def add_product_to_cart(request):
     # Save and quit
     request.session.modified = True
     return JsonResponse({})
+
+def remove_product_from_cart(request):
+
+    if request.method != "POST":
+        return HttpResponseNotAllowed(["POST"])
+        
+    product_id = request.POST["product_id"]
+    # quantity = request.POST["quantity"]
+
+    # Get the shopping cart
+    if not "shopping_cart" in request.session:
+        request.session["shopping_cart"] = {}
+
+    if str(product_id) in request.session["shopping_cart"]:
+        del request.session["shopping_cart"][str(product_id)]
+
+    # Save and quit
+    request.session.modified = True
+    return JsonResponse({})
