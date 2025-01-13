@@ -938,32 +938,8 @@ select{
   min-height: 400px;
 }
 
-.min-h-full{
-  min-height: 100%;
-}
-
-.min-h-\[100vh\]{
-  min-height: 100vh;
-}
-
-.min-h-\[900vh\]{
-  min-height: 900vh;
-}
-
-.min-h-\[90vh\]{
-  min-height: 90vh;
-}
-
-.min-h-\[75vh\]{
-  min-height: 75vh;
-}
-
 .min-h-\[85vh\]{
   min-height: 85vh;
-}
-
-.min-h-\[82vh\]{
-  min-height: 82vh;
 }
 
 .w-6{

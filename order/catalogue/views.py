@@ -2,9 +2,10 @@ from django.http import JsonResponse, HttpResponse, HttpResponseNotAllowed
 from django.template import loader
 from .models import Product
 import stripe
+import os
 
 # Do this with an ENV or something
-stripe.api_key = "sk_test_51QUwDHCjQ55y9LkRd758BA9JwmiCpNCNK3KqZKle5gObVaIxjGhlWuQtvVqRstRFZVbHVHJTOx72wp7YEfX399wT009GxOrUAk"
+stripe.api_key = os.environ['STRIPE_SECRET_KEY']
 
 ### -- Utilities
 
@@ -87,6 +88,7 @@ def checkout(request):
     template = loader.get_template('checkout.html')
     context = {
         "client_secret": intent.client_secret,
+        "stripe_public_key": os.environ['STRIPE_PUBLIC_KEY'],
         "shopping_cart": shopping_cart
     }
     return HttpResponse(template.render(context, request))

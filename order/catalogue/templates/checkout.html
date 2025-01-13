@@ -30,7 +30,7 @@
 </button>
 
 <script>
-    var stripe = Stripe('pk_test_51QUwDHCjQ55y9LkRihf15CeUEOjj3F1YSEGdbI0vVCrRmTMqYv328SRIMbqHfsoeIDXMkuGlyvCvbsQPgkBVtwvB00W1jvzaHo');
+    var stripe = Stripe('{{ stripe_public_key }}');
 
     var elements = stripe.elements({
         clientSecret: '{{client_secret}}',
