@@ -139,7 +139,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
-bin/
+/bin/
 pyvenv.cfg
 
 # Spyder project settings
