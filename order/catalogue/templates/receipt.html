@@ -3,5 +3,11 @@
 {% block title %}Your Receipt{% endblock title %}
 
 {% block content %}
-<h1>Receipt</h1>
+<div class="mb-4">
+    <button type="button" class="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none print:hidden" onclick="print()">Print Receipt</button>
+</div>
+<hr class="print:hidden" />
+<section class="mt-4 print:mt-1">
+    <h1 class="text-2xl font-bold">Receipt</h1>
+</section>
 {% endblock content %}

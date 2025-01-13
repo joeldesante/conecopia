@@ -4,13 +4,6 @@
 
 {% block content %}
 
-<nav class="breadcrumb has-succeeds-separator" aria-label="breadcrumbs">
-    <ul>
-        <li><a href="/order">Conecopia's Menu</a></li>
-        <li class="is-active"><a href="#" aria-current="page">Checkout</a></li>
-    </ul>
-</nav>
-
 <ol class="flex items-center whitespace-nowrap mb-4">
     <li class="inline-flex items-center">
         <a class="flex items-center text-sm text-gray-500 hover:text-blue-600 focus:outline-none focus:text-blue-600" href="/order">
@@ -27,11 +20,14 @@
     </li>
 </ol>
 
-<h1>Checkout</h1>
+<h1 class="text-2xl font-bold mb-4">Checkout</h1>
 <div id="bill-element"></div>
 <div id="pay-element"></div>
 
-<button class="button is-primary" id="confirm">Checkout</button>
+<button 
+    class="mt-4 py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none print:hidden" id="confirm">
+    Complete Checkout
+</button>
 
 <script>
     var stripe = Stripe('pk_test_51QUwDHCjQ55y9LkRihf15CeUEOjj3F1YSEGdbI0vVCrRmTMqYv328SRIMbqHfsoeIDXMkuGlyvCvbsQPgkBVtwvB00W1jvzaHo');

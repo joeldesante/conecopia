@@ -820,11 +820,6 @@ select{
   margin-right: 0.5rem;
 }
 
-.my-4{
-  margin-top: 1rem;
-  margin-bottom: 1rem;
-}
-
 .mb-2{
   margin-bottom: 0.5rem;
 }
@@ -941,6 +936,34 @@ select{
 
 .min-h-\[400px\]{
   min-height: 400px;
+}
+
+.min-h-full{
+  min-height: 100%;
+}
+
+.min-h-\[100vh\]{
+  min-height: 100vh;
+}
+
+.min-h-\[900vh\]{
+  min-height: 900vh;
+}
+
+.min-h-\[90vh\]{
+  min-height: 90vh;
+}
+
+.min-h-\[75vh\]{
+  min-height: 75vh;
+}
+
+.min-h-\[85vh\]{
+  min-height: 85vh;
+}
+
+.min-h-\[82vh\]{
+  min-height: 82vh;
 }
 
 .w-6{
@@ -1672,6 +1695,16 @@ select{
 @media (min-width: 1280px){
   .xl\:max-w-screen-xl{
     max-width: 1280px;
+  }
+}
+
+@media print{
+  .print\:mt-1{
+    margin-top: 0.25rem;
+  }
+
+  .print\:hidden{
+    display: none;
   }
 }
 
