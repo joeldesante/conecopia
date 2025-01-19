@@ -80,14 +80,17 @@ def checkout(request):
 
     shopping_cart = _get_cart_context(request)
 
-    intent = stripe.PaymentIntent.create(
-        amount=1099,
-        currency="usd",
-    )
+    client_secret = None
+    if shopping_cart["total_order_price"] > 0:
+        intent = stripe.PaymentIntent.create(
+            amount=shopping_cart["total_order_price"],
+            currency="usd",
+        )
+        client_secret = intent.client_secret
 
     template = loader.get_template('checkout.html')
     context = {
-        "client_secret": intent.client_secret,
+        "client_secret": client_secret,
         "stripe_public_key": os.environ['STRIPE_PUBLIC_KEY'],
         "shopping_cart": shopping_cart
     }
