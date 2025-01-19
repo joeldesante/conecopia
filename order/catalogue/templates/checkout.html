@@ -95,12 +95,13 @@
             elements,
             confirmParams: {
                 // Return URL where the customer should be redirected after the PaymentIntent is confirmed.
-                return_url: 'https://example.com',
+                return_url: 'http://localhost:8000/order/functions/transaction_processed',
             },
         })
         .then(function(result) {
             if (result.error) {
                 // Inform the customer that there was an error.
+                console.log(result.error)
             }
         })
     }
