@@ -170,7 +170,7 @@ cython_debug/
 node_modules/
 
 # Static
-order/static/uploads/
+order/static/uploads/*
 
 # PyCharm
 #  JetBrains specific template is maintained in a separate JetBrains.gitignore that can
