@@ -1,7 +1,9 @@
-from django.http import JsonResponse, HttpResponse, HttpResponseNotAllowed, HttpResponseBadRequest
+from django.http import JsonResponse, HttpResponse, HttpResponseNotAllowed, HttpResponseBadRequest, HttpResponseForbidden
 from django.template import loader
 from django.shortcuts import redirect
 from .models import Product, BillOfSale
+from django.conf import settings
+from nanoid import generate
 import stripe
 import os, json
 
@@ -14,6 +16,10 @@ Returns the rendered cart data that is intended to be passed to various pages wh
 the data.
 '''
 def _get_cart_context(request) -> dict:
+
+    if not "shopping_cart" in request.session:
+        request.session["shopping_cart"] = {}
+
     session_cart_data = request.session.get("shopping_cart", {})
     products = Product.objects.filter(id__in=session_cart_data.keys())
 
@@ -24,6 +30,33 @@ def _get_cart_context(request) -> dict:
         cart_item = {}
         cart_item["product"] = product
         cart_item["quantity"] = int(session_cart_data[str(product.id)])
+        cart_item["total_price"] = product.price * cart_item["quantity"]
+        rendered_shopping_cart.append(cart_item)
+        
+        total_order_quantity = total_order_quantity + cart_item["quantity"]
+        total_order_price = total_order_price + cart_item["total_price"]
+
+    return {
+        "items": rendered_shopping_cart,
+        "total_order_price": total_order_price,
+        "total_order_quantity": total_order_quantity
+    }
+
+def _get_receipt_context(receipt) -> dict:
+
+    ###### FIXME: The price should be FIXED!!!! If the product changes in price later the receipt data should not change.
+    ###### WE MUST SAVE PRICE DATA IN RECEIPT
+
+    receipt_data = json.loads(receipt)
+    products = Product.objects.filter(id__in=receipt_data.keys())
+
+    total_order_price = 0
+    total_order_quantity = 0
+    rendered_shopping_cart = []
+    for product in products:
+        cart_item = {}
+        cart_item["product"] = product
+        cart_item["quantity"] = int(receipt_data[str(product.id)])
         cart_item["total_price"] = product.price * cart_item["quantity"]
         rendered_shopping_cart.append(cart_item)
         
@@ -56,12 +89,37 @@ def product(request, id):
     shopping_cart = _get_cart_context(request)
 
     product = Product.objects.get(id = id)
+
     template = loader.get_template('product.html')
     context = {
-        'product': product,
-        "shopping_cart": shopping_cart
+        "product": product,
+        "shopping_cart": shopping_cart,
+        "admin_links": [
+            {
+                "name": "Edit Product Details",
+                "href": "/order/product/{id}/edit".format(id=id)
+            }
+        ]
     }
 
+    return HttpResponse(template.render(context, request))
+
+def product_edit(request, id):
+    if not request.user.is_authenticated:
+        return HttpResponseForbidden("You must be logged in to view this resource.")
+
+    product = Product.objects.get(id = id)
+
+    template = loader.get_template('product.edit.html')
+    context = {
+        "product": product,
+        "admin_links": [
+            {
+                "name": "Return To Product Page",
+                "href": "/order/product/{id}".format(id=id)
+            }
+        ]
+    }
     return HttpResponse(template.render(context, request))
 
 def cart(request):
@@ -102,14 +160,93 @@ def receipt(request):
 
     bill_of_sale = BillOfSale.objects.get(id = bill_of_sale_id)
 
+    rendered_receipt = _get_receipt_context(bill_of_sale.serialized_shopping_cart)
+
     template = loader.get_template('receipt.html')
     context = {
-        "items": bill_of_sale.serialized_shopping_cart
+        "receipt": rendered_receipt
     }
 
     return HttpResponse(template.render(context, request))
 
 # Web Functions 
+def upload_image(request):
+    if request.method != "POST":
+        return HttpResponseNotAllowed(["POST"])
+    
+    id = request.POST["product_id"]
+    
+    print(request.FILES)
+    file = request.FILES.get('file')
+    file_name = '{prefix}-{file_name}'.format(prefix=generate(), file_name=file.name)
+
+    save_path = os.path.join(settings.STATICFILES_DIRS[0], 'uploads', file_name)
+    with open(save_path, 'wb+') as destination:
+        for chunk in file.chunks():
+            destination.write(chunk)
+    
+    product = Product.objects.get(id=id)
+    product.images.append({
+        "src": "/static/uploads/{file}".format(file=file_name),
+        "alt": "Alt Text"
+    })
+    product.save()
+
+    return JsonResponse({
+        "path": "/static/uploads/{file}".format(file=file_name)
+    })
+
+def upload_thumbnail(request):
+    if request.method != "POST":
+        return HttpResponseNotAllowed(["POST"])
+    
+    id = request.POST["product_id"]
+    
+    print(request.FILES)
+    file = request.FILES.get('file')
+    file_name = '{prefix}-{file_name}'.format(prefix=generate(), file_name=file.name)
+
+    save_path = os.path.join(settings.STATICFILES_DIRS[0], 'uploads', file_name)
+    with open(save_path, 'wb+') as destination:
+        for chunk in file.chunks():
+            destination.write(chunk)
+    
+    product = Product.objects.get(id=id)
+    product.thumbnail_url = "/static/uploads/{file}".format(file=file_name)
+    product.save()
+
+    return JsonResponse({
+        "path": "/static/uploads/{file}".format(file=file_name)
+    })
+
+def update_product(request):
+    if request.method != "POST":
+        return HttpResponseNotAllowed(["POST"])
+    
+    id = request.POST["product_id"]
+    name = request.POST["product_name"]
+    description = request.POST["product_description"]
+    price = request.POST["product_price"]
+    quantity = request.POST["product_quantity"]
+    ingredients = json.loads(request.POST["product_ingredients"])
+
+    images = json.loads(request.POST["product_images"])
+    thumbnail = request.POST["product_thumbnail"]
+
+    # Update Model
+    product = Product.objects.get(id=id)
+    product.name = name
+    product.description = description
+    product.price = int(price)
+    product.quantity = int(quantity)
+    product.ingredients = ingredients
+
+    product.images = images
+    product.thumbnail_url = thumbnail
+    
+    product.save()
+    return JsonResponse({})
+
 def add_product_to_cart(request):
 
     ##### FIXME: USERS CAN ADD UNLIMITED ITEMS TO CART. LIMIT THIS ON THE BACKEND
@@ -165,7 +302,7 @@ def transaction_processed(request):
     if payment_intent.status != 'succeeded':
         print("Payment Not Succeeded")
         return HttpResponseBadRequest()
-    
+
     if not "shopping_cart" in request.session:
         return HttpResponseBadRequest("Shopping cart not found")
 
@@ -184,7 +321,8 @@ def transaction_processed(request):
     bill_of_sale.save()
 
     # 3. Clear the shopping cart!!! End the session.
-    request.session.flush()
+    request.session["shopping_cart"] = {}
+
 
     # 4. Send an email notification to the customer and the vendor via MailGun or Stripe.
     #       And, If possible send a text message to the vendor to notify them of a sale.

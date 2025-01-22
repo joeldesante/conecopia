@@ -3,17 +3,59 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{% static 'master.css' %}">
-    <script src="{% static 'preline.js' %}"></script>
-    <script src="https://js.stripe.com/v3/"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block title %}{% endblock %}</title>
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="{% static 'master.css' %}">
+
+  <!-- Scripts -->
+  <script src="https://js.stripe.com/v3/"></script>
+  <script src="{% static 'preline.js' %}"></script>
+
 </head>
 <body class="flex flex-col justify-center items-center gap-4">
 
+
+  {% if user.is_authenticated %}
+  <div class="bg-gray-800 flex flex-row justify-center text-white w-full divide-x text-xs">
+    <div class="flex flex-row w-full justify-between px-5">
+      <div>
+          <a class="p-2 py-1 hover:bg-gray-700 flex flex-row gap-1 items-center py-2 h-full" href="/order" title='Return to this weeks flavors catalogue.'>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="size-3">
+              <path d="M8.543 2.232a.75.75 0 0 0-1.085 0l-5.25 5.5A.75.75 0 0 0 2.75 9H4v4a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1v-1a1 1 0 1 1 2 0v1a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1V9h1.25a.75.75 0 0 0 .543-1.268l-5.25-5.5Z" />
+            </svg>
+            This Weeks Flavors
+          </a>
+      </div>
+      <div class="flex flex-row">
+        {% if admin_links %}
+          {% for link in admin_links %}
+            <a class="p-2 py-1 hover:bg-gray-700 flex flex-row gap-1 items-center py-2" href="{{ link.href }}">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="size-3">
+                <path fill-rule="evenodd" d="M15 4.5A3.5 3.5 0 0 1 11.435 8c-.99-.019-2.093.132-2.7.913l-4.13 5.31a2.015 2.015 0 1 1-2.827-2.828l5.309-4.13c.78-.607.932-1.71.914-2.7L8 4.5a3.5 3.5 0 0 1 4.477-3.362c.325.094.39.497.15.736L10.6 3.902a.48.48 0 0 0-.033.653c.271.314.565.608.879.879a.48.48 0 0 0 .653-.033l2.027-2.027c.239-.24.642-.175.736.15.09.31.138.637.138.976ZM3.75 13a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" clip-rule="evenodd" />
+                <path d="M11.5 9.5c.313 0 .62-.029.917-.084l1.962 1.962a2.121 2.121 0 0 1-3 3l-2.81-2.81 1.35-1.734c.05-.064.158-.158.426-.233.278-.078.639-.11 1.062-.102l.093.001ZM5 4l1.446 1.445a2.256 2.256 0 0 1-.047.21c-.075.268-.169.377-.233.427l-.61.474L4 5H2.655a.25.25 0 0 1-.224-.139l-1.35-2.7a.25.25 0 0 1 .047-.289l.745-.745a.25.25 0 0 1 .289-.047l2.7 1.35A.25.25 0 0 1 5 2.654V4Z" />
+              </svg>            
+            {{ link.name }}</a>
+          {% endfor %}
+        {% endif %}
+
+        <a class="p-2 py-1 hover:bg-gray-700 flex flex-row gap-1 items-center py-2" target="_blank" href="/admin" title="Open the expert view admin panel.">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="size-3">
+            <path d="M13.488 2.513a1.75 1.75 0 0 0-2.475 0L6.75 6.774a2.75 2.75 0 0 0-.596.892l-.848 2.047a.75.75 0 0 0 .98.98l2.047-.848a2.75 2.75 0 0 0 .892-.596l4.261-4.262a1.75 1.75 0 0 0 0-2.474Z" />
+            <path d="M4.75 3.5c-.69 0-1.25.56-1.25 1.25v6.5c0 .69.56 1.25 1.25 1.25h6.5c.69 0 1.25-.56 1.25-1.25V9A.75.75 0 0 1 14 9v2.25A2.75 2.75 0 0 1 11.25 14h-6.5A2.75 2.75 0 0 1 2 11.25v-6.5A2.75 2.75 0 0 1 4.75 2H7a.75.75 0 0 1 0 1.5H4.75Z" />
+          </svg>        
+          Open Expert Panel
+        </a>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
   <div class="
     flex flex-col justify-center 
+    w-full
     xl:max-w-screen-xl xl:min-w-screen-xl
     lg:max-w-screen-lg lg:min-w-screen-lg
     md:max-w-screen-md md:min-w-screen-md
@@ -23,14 +65,14 @@
     {% block navigation %}
     {% endblock %}
 
-    <div class="min-h-[85vh]">
+    <div class="min-h-[50vh]">
       {% block content %}
       {% endblock %}
     </div>
   </div>
 
   <footer 
-    class='flex flex-col gap-2 justify-center items-center text-center p-4 bg-red-200 w-full text-white h-[300px] bg-[url("/static/scoops.png")] bg-[length:200px_200px]'
+    class='flex flex-col gap-2 justify-center items-center text-center p-4 mt-12 bg-red-200 w-full text-white h-[300px] bg-[url("/static/scoops.png")] bg-[length:200px_200px]'
     style='background-blend-mode: multiply;'
   >
     
@@ -38,6 +80,11 @@
     <a class="text-xs text-neutral-500 bg-white rounded-full text-black inline-block p-2 px-4" target="blank" href="https://joeldesante.com">Website designed and developed by <span class="underline underline-offset-4 hover:text-red-600">Joel DeSante</span>.</a>
     
   </footer>
+
+  <script src="{% static 'petitevue.js' %}"></script>
+  <script>
+    PetiteVue.createApp({ $delimiters: ['[[', ']]'] }).mount()
+  </script>
 
 </body>
 </html>

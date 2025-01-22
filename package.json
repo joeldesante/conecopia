@@ -6,9 +6,10 @@
     "lib": "lib"
   },
   "scripts": {
+    "css:dev": "npx tailwindcss -i ./styles/master.css -o ./order/static/master.css --watch",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "Joel DeSante",
   "license": "ISC",
   "description": "",
   "devDependencies": {

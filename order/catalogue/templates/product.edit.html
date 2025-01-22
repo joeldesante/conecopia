@@ -1,0 +1,286 @@
+{% extends "master.html" %}
+
+{% load static %}
+
+{% load humanize %}
+{% load filters %}
+
+{% block title %}
+    {{ product.name }} - Conecopia
+{% endblock %}
+
+{% block content %}
+
+<div v-scope="ProductForm()">
+    <dialog v-bind:open="discardDialog" class="p-4 rounded border bg-white shadow">
+        <p class="font-bold text-lg mb-4">You are about to discard your changes.</p>
+        <div class="flex flex-row gap-2 justify-center">
+            <button 
+                @click="window.location.reload()"
+                type="button" 
+                class="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"
+            >
+                Confirm
+            </button>
+            <button 
+                @click="discardDialog=false" 
+                type="button" 
+                class="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 focus:outline-none focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none">
+                Cancel
+            </button>
+        </div>
+    </dialog>
+
+    <div class="flex flex-col lg:flex-row gap-4 divide-x mt-4" >
+        <section class="max-w-[24rem] min-w-[24rem]">
+            <h2 class="text-2xl font-bold mb-4">[[ form.productName ]]&nbsp;</h2>
+
+            <div class="flex flex-col gap-4">
+                <div>
+                    <label for="product-name" class="block text-sm font-medium mb-2">Name</label>
+                    <input type="text" id="product-name" class="py-3 px-4 block w-full border-gray-200 rounded text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none" placeholder="Enter a product name." v-model="form.productName" required>
+                </div>
+
+                <div>
+                    <label for="description-textarea" class="block text-sm font-medium mb-2">Description</label>
+                    <textarea id="description-textarea" class="py-3 px-4 block w-full border-gray-200 rounded text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none" rows="3" placeholder="Describe the product." data-hs-textarea-auto-height="" v-model="form.productDescription"></textarea>
+                </div>
+
+                <div>
+                    <div>
+                        <label for="product-ingredient" class="block text-sm font-medium mb-2">Ingredients</label>
+                        <div class="flex rounded shadow-sm">
+                            <input v-model="form.productIngredient" type="text" id="product-ingredient" name="product-ingredient" class="py-3 px-4 block w-full border-gray-200 shadow-sm rounded-s-lg text-sm focus:z-10 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none" placeholder="Enter an ingredient">
+                            <button @click="if(form.productIngredient != '') { form.ingredients.push(form.productIngredient); form.productIngredient=''; }" type="button" class="py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-e-md border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none">
+                                Add
+                            </button>
+                        </div>
+                    </div>
+                    <div class="flex flex-row flex-wrap gap-2 mt-2">
+                        <div class="flex flex-row justify-between rounded-full border px-2 py-1 bg-neutral-100 gap-2" v-for="(ingredient, index) in form.ingredients">
+                            <p class="font-medium text-xs">[[ ingredient ]]</p>
+                            <button @click="form.ingredients.splice(index, 1)" class="rounded-full hover:bg-neutral-200 active:bg-neutral-200 w-[18px] h-[18px] flex items-center justify-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="size-4">
+                                    <path d="M5.28 4.22a.75.75 0 0 0-1.06 1.06L6.94 8l-2.72 2.72a.75.75 0 1 0 1.06 1.06L8 9.06l2.72 2.72a.75.75 0 1 0 1.06-1.06L9.06 8l2.72-2.72a.75.75 0 0 0-1.06-1.06L8 6.94 5.28 4.22Z" />
+                                </svg>                      
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div>
+                    <label for="product-price" class="block text-sm font-medium mb-2 flex items-center gap-1">Price <span class="text-xs font-bold rounded-full bg-neutral-100 p-1 px-2 border">&cent; / USD</span></label>
+                    <input type="number" min="0" step="1" id="product-price" class="py-3 px-4 block w-full border-gray-200 rounded text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none" placeholder="Enter a price." required v-model="form.productPrice">
+                    <p class="mt-2 text-sm text-gray-500" id="hs-input-helper-text">Enter the value in cents. <br/>Ex. $12.00 would be 1200 cents</p>
+                </div>
+
+                <div>
+                    <label for="product-stock" class="block text-sm font-medium mb-2">Stock</label>
+                    <input type="number" min="0" step="1" id="product-stock" class="py-3 px-4 block w-full border-gray-200 rounded text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none" placeholder="Enter the quantity in stock." required v-model="form.productQuantity">
+                </div>
+
+            </div>
+            
+        </section>
+
+        
+
+        <section class="pl-4 flex flex-col gap-4 max-w-[34rem] min-w-[34rem]">
+
+            <div class="flex flex-row gap-2 items-center">
+                
+                <img v-if="form.productThumbnail != ''" v-bind:src="form.productThumbnail" alt="Thumbnail image of the product." class="w-40 h-40 rounded border bg-neutral-200">
+                <div v-else class="w-48 h-48 rounded border bg-neutral-200 flex items-center justify-center text-neutral-600">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="size-8">
+                        <path fill-rule="evenodd" d="M2 4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V4Zm10.5 5.707a.5.5 0 0 0-.146-.353l-1-1a.5.5 0 0 0-.708 0L9.354 9.646a.5.5 0 0 1-.708 0L6.354 7.354a.5.5 0 0 0-.708 0l-2 2a.5.5 0 0 0-.146.353V12a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5V9.707ZM12 5a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z" clip-rule="evenodd" />
+                    </svg>                  
+                </div>
+
+                <div class="flex flex-col gap-4">
+                    <div>
+                        <p class="block text-sm font-medium mb-2">Current Thumbnail Url:</p>
+                        <div class="px-2 py-1 font-mono bg-neutral-200 rounded border text-xs">
+                            <span v-if="form.productThumbnail != ''">[[ form.productThumbnail ]]</span>
+                            <span v-else>No thumbnail url. Please upload an image.</span>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="file-input" class="block text-sm font-medium mb-2 flex items-center gap-1">Choose New Thumbnail</label>
+                        <div class="flex rounded shadow-sm">
+                            <input 
+                                @change="uploadThumbnail"
+                                type="file" 
+                                name="file-input" 
+                                id="file-input" 
+                                accept="image/*" 
+                                class="block w-full border border-gray-200 shadow-sm rounded text-sm focus:z-10 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none
+                                file:bg-gray-50 file:border-0
+                                file:me-4
+                                file:py-3 file:px-4
+                                ">
+                        </div>
+                        <p class="mt-2 text-sm text-gray-500" id="hs-input-helper-text">You may only upload images no larger than 4MB.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <h2 class="text-lg font-medium mb-2">Product Images</h2>
+
+                <div class="flex flex-row flex-nowrap gap-2 overflow-x-scroll pb-3">
+                    <div v-for="(image, index) in form.productImages" class="shrink-0 relative group" tabindex="0">
+                        <button 
+                            class="absolute top-0 right-0 bg-red-800 hover:bg-red-600 active:bg-red-600 w-[32px] h-[32px] m-2 text-white flex rounded-full items-center justify-center border border-red-900"
+                            @click="form.productImages.splice(index, 1)"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="size-4">
+                                <path fill-rule="evenodd" d="M5 3.25V4H2.75a.75.75 0 0 0 0 1.5h.3l.815 8.15A1.5 1.5 0 0 0 5.357 15h5.285a1.5 1.5 0 0 0 1.493-1.35l.815-8.15h.3a.75.75 0 0 0 0-1.5H11v-.75A2.25 2.25 0 0 0 8.75 1h-1.5A2.25 2.25 0 0 0 5 3.25Zm2.25-.75a.75.75 0 0 0-.75.75V4h3v-.75a.75.75 0 0 0-.75-.75h-1.5ZM6.05 6a.75.75 0 0 1 .787.713l.275 5.5a.75.75 0 0 1-1.498.075l-.275-5.5A.75.75 0 0 1 6.05 6Zm3.9 0a.75.75 0 0 1 .712.787l-.275 5.5a.75.75 0 0 1-1.498-.075l.275-5.5a.75.75 0 0 1 .786-.711Z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                        <img
+                            v-bind:src="image.src" v-bind:alt="image.alt" 
+                            class="h-48 w-auto rounded border"
+                        />
+
+                        <div class="absolute bottom-0 left-0 invisible group-focus:visible group-hover:visible m-1 flex flex-col gap-[2px]">
+                            <p class="font-mono text-white bg-black p-1 text-[10px]">[[ image.alt ]]</p>
+                            <p class="font-mono text-white bg-black p-1 text-[8px]">[[ image.src ]]</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <label for="file-input" class="block text-sm font-medium mb-2 flex items-center gap-1">Upload New Product Image</label>
+                    <div class="flex rounded shadow-sm">
+                        <input 
+                            @change="uploadImage"
+                            type="file" 
+                            name="file-input" 
+                            id="file-input" 
+                            accept="image/*" 
+                            class="block w-full border border-gray-200 shadow-sm rounded text-sm focus:z-10 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none
+                            file:bg-gray-50 file:border-0
+                            file:me-4
+                            file:py-3 file:px-4
+                            ">
+                    </div>
+                    <p class="mt-2 text-sm text-gray-500" id="hs-input-helper-text">You may only upload images no larger than 4MB.</p>
+                </div>
+            </div>
+
+            <div>
+                <button 
+                    @click="submitForm(form)"
+                    type="button" 
+                    class="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"
+                >
+                    Save
+                </button>
+                
+                <button 
+                    @click="discardDialog=true" 
+                    type="button" 
+                    class="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 focus:outline-none focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none">
+                    Discard Changes
+                </button>
+            </div>
+
+        </section>
+    </div>
+</div>
+
+<script>
+    function ProductForm() {
+        return {
+            discardDialog: false,
+            form: {
+                ingredients: {{ product.ingredients|safe }},
+                productIngredient: '',
+                productPrice: {{ product.price }},
+                productQuantity: {{ product.quantity }},
+                productName: '{{ product.name }}', 
+                productDescription: '{{product.description}}',
+                productThumbnail: '{{product.thumbnail_url}}',
+                productImages: {{ product.images|safe }}
+            },
+            submitForm(form) {
+
+                // 1. Create a AJAX request to add the item to cart
+                const data = new FormData();
+                data.append("csrfmiddlewaretoken", "{{ csrf_token }}");
+                
+                data.append("product_id", "{{ product.id }}");
+                data.append("product_name", form.productName);
+                data.append("product_description", form.productDescription);
+                data.append("product_price", form.productPrice);
+                data.append("product_quantity", form.productQuantity);
+                data.append("product_ingredients", JSON.stringify(form.ingredients));
+                data.append("product_images", JSON.stringify(form.productImages));
+                data.append("product_thumbnail", form.productThumbnail);
+
+                const updateProductRequest = fetch("/order/functions/update_product", {
+                    method: "POST",
+                    body: data
+                }).then((response) => {
+                    // 2. If the AJAX request succeeds (200 OK) then redirect the user to /order
+                    if(!response.ok) {
+                        throw new Error(response.statusText);
+                    }
+                    window.location.reload()
+                }).catch((err) => {
+                    // 3. Otherwise notify the user of the error
+                    console.warn(err)
+                })
+            },
+            uploadImage(event, form) {
+                let file = event.currentTarget.files[0]
+
+                const data = new FormData();
+                data.append("csrfmiddlewaretoken", "{{ csrf_token }}");
+                data.append("product_id", "{{ product.id }}");
+                data.append("file", file);
+
+                const uploadImage = fetch("/order/functions/upload_image", {
+                    method: "POST",
+                    body: data
+                }).then((response) => {
+                    // 2. If the AJAX request succeeds (200 OK) then redirect the user to /order
+                    if(!response.ok) {
+                        throw new Error(response.statusText);
+                    }
+
+                    window.location.reload()
+                })
+                .catch((err) => {
+                    // 3. Otherwise notify the user of the error
+                    console.warn(err)
+                })
+            },
+            uploadThumbnail(event, form) {
+                let file = event.currentTarget.files[0]
+
+                const data = new FormData();
+                data.append("csrfmiddlewaretoken", "{{ csrf_token }}");
+                data.append("product_id", "{{ product.id }}");
+                data.append("file", file);
+
+                const uploadImage = fetch("/order/functions/upload_thumbnail", {
+                    method: "POST",
+                    body: data
+                }).then((response) => {
+                    // 2. If the AJAX request succeeds (200 OK) then redirect the user to /order
+                    if(!response.ok) {
+                        throw new Error(response.statusText);
+                    }
+                    window.location.reload()
+                })
+                .catch((err) => {
+                    // 3. Otherwise notify the user of the error
+                    console.warn(err)
+                })
+            }
+        }
+    }
+</script>
+
+{% endblock content %}

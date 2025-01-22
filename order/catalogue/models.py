@@ -9,6 +9,7 @@ class Product(models.Model):
     images = models.JSONField(default=list, blank=True)
     price = models.PositiveIntegerField(default=0)
     quantity = models.PositiveIntegerField(default=0)
+    ingredients = models.JSONField(default=list, blank=True)
     
     def __str__(self):
         return f"{self.name}"

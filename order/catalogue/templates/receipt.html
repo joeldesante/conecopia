@@ -1,5 +1,8 @@
 {% extends "master-catalogue.html" %}
 
+{% load humanize %}
+{% load filters %}
+
 {% block title %}Your Receipt{% endblock title %}
 
 {% block content %}
@@ -8,7 +11,65 @@
 </div>
 <hr class="print:hidden" />
 <section class="mt-4 print:mt-1">
-    <h1 class="text-2xl font-bold">Receipt</h1>
-    {{ items }}
+    <h1 class="text-2xl font-bold mb-4">Receipt</h1>
+    
+    <div class="flex flex-col gap-4">
+        <div class="flex flex-col gap-2 border p-2 rounded divide-y">
+            <table class="table-auto">
+                <thead class="border-b-[1px]">
+                    <tr class="divide-x">
+                        <th class="pr-4 text-left">Product Name</th>
+                        <th class="px-4 text-right">Qty</th>
+                        <th class="pl-4 text-right">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in receipt.items %}
+                        <tr class="divide-x font-mono">     
+                            <td class="w-full font-medium pr-4">{{ item.product.name }}</td>
+                            <td class="px-4 text-right">{{ item.quantity }}</td>
+                            <td class="pl-4">${{ item.total_price|divide:100|floatformat:2|intcomma  }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <div class="flex pt-2">
+                <p class="font-semibold text-lg">Total: ${{ receipt.total_order_price|divide:100|floatformat:2|intcomma }}</p>
+            </div>
+        </div>
+
+        <div class="flex flex-col gap-2">
+            <h2 class="text-md font-semibold">Pickup Instructions:</h2>
+            <p>
+                Your order will be available for pickup at the Arlington Courthouse Farmers Market on the Saturday 
+                following your purchase date. Please show this receipt to the vendor at the Conecopia Gelato stand.
+            </p>
+        </div>
+        
+        <div class="flex flex-col gap-2">
+            <h2 class="text-md font-semibold">Market Location:</h2>
+            <p>
+                1400 N Courthouse Rd. Arlington, Virginia.
+            </p>
+        </div>
+        
+        <div class="flex flex-col gap-2">
+            <h2 class="text-md font-semibold">Market Hours:</h2>
+            <p>
+                Saturdays 8:00 am - 12:00 pm
+            </p>
+        </div>    
+
+        <div>
+            <p class="text-sm">Thank you for your purchase!</p>
+            <div class="mt-2">
+                <p class="text-sm">If you have any questions or comments regarding your order, 
+                    please call or text Tony DeSante at <a class="font-medium underline" href="tel+17039894308">(703)-989-4308</a>.</p>
+                <p class="text-sm">You may also reach us via email at <a class="font-medium underline" href="mailto:conecopiagelato@gmail.com">conecopiagelato@gmail.com</a>.</p>
+            </div>
+        </div>
+    </div>
+
 </section>
 {% endblock content %}
