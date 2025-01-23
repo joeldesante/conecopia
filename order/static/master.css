@@ -827,6 +827,10 @@ select{
   margin: 1rem;
 }
 
+.m-auto{
+  margin: auto;
+}
+
 .mx-2{
   margin-left: 0.5rem;
   margin-right: 0.5rem;
@@ -840,6 +844,11 @@ select{
 .my-5{
   margin-top: 1.25rem;
   margin-bottom: 1.25rem;
+}
+
+.my-4{
+  margin-top: 1rem;
+  margin-bottom: 1rem;
 }
 
 .mb-2{
@@ -1056,8 +1065,32 @@ select{
   max-width: 34rem;
 }
 
+.max-w-lg{
+  max-width: 32rem;
+}
+
 .max-w-xs{
   max-width: 20rem;
+}
+
+.max-w-screen-lg{
+  max-width: 1024px;
+}
+
+.max-w-sm{
+  max-width: 24rem;
+}
+
+.max-w-md{
+  max-width: 28rem;
+}
+
+.max-w-screen-sm{
+  max-width: 640px;
+}
+
+.max-w-screen-md{
+  max-width: 768px;
 }
 
 .flex-none{
