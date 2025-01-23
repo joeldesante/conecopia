@@ -161,9 +161,11 @@ def receipt(request):
     bill_of_sale = BillOfSale.objects.get(id = bill_of_sale_id)
 
     rendered_receipt = _get_receipt_context(bill_of_sale.serialized_shopping_cart)
+    shopping_cart = _get_cart_context(request)
 
     template = loader.get_template('receipt.html')
     context = {
+        "shopping_cart": shopping_cart,
         "receipt": rendered_receipt
     }
 
