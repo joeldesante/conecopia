@@ -89,10 +89,20 @@
             <p><span class="font-medium">${{ product.price|divide:100|floatformat:2|intcomma }}</span> <span class="text-neutral-600">/ Pint</span></p>
         </section>
 
-        {% if product.quantity <= 0 %}
+        {% product_quantity_excluding_cart product.id as product_quantity %}
+
+        {% if product_quantity <= 0 and product.quantity <= 0 %}
             <div class="p-2 px-4  rounded ring-2 ring-red-300 ring-offset-2">
                 <p><span class="font-semibold">Sorry, this flavor is currently out of stock.</span></p>
                 <p class="text-sm text-neutral-600">Tony will whip up another batch soon!</p>
+            </div>
+        {% endif %}
+
+        {% if product_quantity <= 0 and product.quantity > 0 %}
+            <div class="p-2 px-4 rounded ring-2 ring-orange-300 ring-offset-2">
+                <p><span class="font-semibold">The remainder of this weeks stock in currently in your shopping cart.</span></p>
+                <p class="text-sm text-neutral-600">Tony will whip up another batch soon!</p>
+                <a href="/order/checkout" class="text-sm text-red-600 font-medium hover:text-red-500 underline">Proceed to Checkout</a>
             </div>
         {% endif %}
 
@@ -115,8 +125,8 @@
 
             <!-- Input Number -->
             <div class="py-2 px-3 inline-block bg-white border border-gray-200 rounded" data-hs-input-number='{
-                "max": {{ product.quantity }},
-                "min": 1
+                "max": {{ product_quantity }},
+                "min": {% if product_quantity > 0 %}1{% else %}0{% endif %}
             }'>
                 <div class="flex items-center gap-x-1.5">
                     <button type="button" class="size-6 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-md border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 focus:outline-none focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none" tabindex="-1" aria-label="Decrease" data-hs-input-number-decrement="">
@@ -125,7 +135,7 @@
                     </svg>
                     </button>
 
-                    <input id="quantity" class="p-0 w-6 bg-transparent border-0 text-gray-800 text-center focus:ring-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none" style="-moz-appearance: textfield;" type="number" aria-roledescription="Number field" value="1" data-hs-input-number-input="" {% if product.quantity <= 0 %}disabled=""{% endif %}>
+                    <input id="quantity" class="p-0 w-6 bg-transparent border-0 text-gray-800 text-center focus:ring-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none" style="-moz-appearance: textfield;" type="number" aria-roledescription="Number field" value="{% if product_quantity > 0 %}1{% else %}0{% endif %}" data-hs-input-number-input="" {% if product.quantity <= 0 %}disabled=""{% endif %}>
                     
                     
                     <button type="button" class="size-6 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-md border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 focus:outline-none focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none" tabindex="-1" aria-label="Increase" data-hs-input-number-increment="">
@@ -138,7 +148,7 @@
             </div>
             <!-- End Input Number -->
 
-            <button id="add-to-cart" type="button" class="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none" {% if product.quantity <= 0 %}disabled=""{% endif %}>
+            <button id="add-to-cart" type="button" class="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none" {% if product_quantity <= 0 %}disabled=""{% endif %}>
                 Add to Cart
                 <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="m5 11 4-7"></path>

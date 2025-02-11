@@ -4,6 +4,7 @@ from django.shortcuts import redirect
 from .models import Product, BillOfSale
 from django.conf import settings
 from nanoid import generate
+from .utils import *
 import stripe
 import os, json
 
@@ -20,7 +21,7 @@ def _get_cart_context(request) -> dict:
     if not "shopping_cart" in request.session:
         request.session["shopping_cart"] = {}
 
-    session_cart_data = request.session.get("shopping_cart", {})
+    session_cart_data = request.session.get("shopping_cart", {})    # Data in shopping cart is a JSON Dict / { "1": 4, "5": 2 }
     products = Product.objects.filter(id__in=session_cart_data.keys())
 
     total_order_price = 0
@@ -268,6 +269,11 @@ def add_product_to_cart(request):
     else:
         request.session["shopping_cart"][str(product_id)] = int(request.session["shopping_cart"][str(product_id)]) + int(quantity)
 
+    # Cap the user to the quantity in stock
+    product = Product.objects.get(id=product_id)
+    if request.session["shopping_cart"][str(product_id)] > product.quantity:
+        request.session["shopping_cart"][str(product_id)] = product.quantity
+
     # Save and quit
     request.session.modified = True
     return JsonResponse({})
@@ -328,6 +334,14 @@ def transaction_processed(request):
 
     # 4. Send an email notification to the customer and the vendor via MailGun or Stripe.
     #       And, If possible send a text message to the vendor to notify them of a sale.
+
+    send_email(
+        to_address="joeldesante@gmail.com", 
+        from_adress="Tony DeSante <tony@conecopia.com>", 
+        subject="Your Conecopia Gelato Receipt.",
+        message="Thank you for shopping with us"
+    )
+
 
     # 5. Redirect the user to the reciept page and display the order details.
     return redirect("/order/receipt?id={bill_of_sale_id}".format(bill_of_sale_id=bill_of_sale.id), permanent=False)
