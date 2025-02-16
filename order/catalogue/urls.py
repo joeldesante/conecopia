@@ -11,6 +11,7 @@ urlpatterns = [
     path("cart", views.cart, name="cart"),
     path("checkout", views.checkout, name="checkout"),
     path("receipt", views.receipt, name="receipt"),
+    path("settings", views.settings, name="settings"),
 
     # Web Functions
     path("functions/add_product_to_cart", views.add_product_to_cart, name="add_product_to_cart"),

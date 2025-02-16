@@ -2,7 +2,7 @@ import requests, os
 
 def send_email(to_address: str, from_adress: str, subject: str, message: str):
     
-    MAILGUN_API_URL = os.environ.get(MAILGUN_API_URL)
+    MAILGUN_API_URL = os.environ.get("MAILGUN_API_URL")
     
     try:
         api_key = os.environ.get("MAILGUN_API_KEY")

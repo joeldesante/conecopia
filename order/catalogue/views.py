@@ -1,7 +1,7 @@
 from django.http import JsonResponse, HttpResponse, HttpResponseNotAllowed, HttpResponseBadRequest, HttpResponseForbidden
 from django.template import loader
 from django.shortcuts import redirect
-from .models import Product, BillOfSale
+from .models import Product, BillOfSale, SiteSetting
 from django.conf import settings
 from nanoid import generate
 from .utils import *
@@ -80,7 +80,13 @@ def index(request):
     template = loader.get_template('order.html')
     context = {
         "products": products,
-        "shopping_cart": shopping_cart
+        "shopping_cart": shopping_cart,
+        "admin_links": [
+            {
+                "name": "Settings",
+                "href": "/order/settings"
+            }
+        ]
     }
 
     return HttpResponse(template.render(context, request))
@@ -170,6 +176,14 @@ def receipt(request):
         "receipt": rendered_receipt
     }
 
+    return HttpResponse(template.render(context, request))
+
+def settings(request):
+    settings = SiteSetting.objects.all()
+    template = loader.get_template('settings.html')
+    context = {
+        "settings": settings,
+    }
     return HttpResponse(template.render(context, request))
 
 # Web Functions 
@@ -335,16 +349,22 @@ def transaction_processed(request):
     # 4. Send an email notification to the customer and the vendor via MailGun or Stripe.
     #       And, If possible send a text message to the vendor to notify them of a sale.
 
+    email_address = SiteSetting.objects.get(key="email_send_from")
+    email_message = SiteSetting.objects.get(key="email_template")
+    email_sender_name = SiteSetting.objects.get(key="email_sender_name")
+    email_subject = SiteSetting.objects.get(key="email_subject")
+
+    email_message = "THE RECEIPT DATA\n{email_message}".format(email_message = email_message)
+
     send_email(
-        to_address="joeldesante@gmail.com", 
-        from_adress="Tony DeSante <tony@conecopia.com>", 
-        subject="Your Conecopia Gelato Receipt.",
-        message="Thank you for shopping with us"
+        to_address = "joeldesante@gmail.com", 
+        from_adress = "{sender_name} <{email_address}>".format(sender_name = email_sender_name, email_address = email_address),
+        subject = email_subject,
+        message = email_message
     )
 
 
     # 5. Redirect the user to the reciept page and display the order details.
     return redirect("/order/receipt?id={bill_of_sale_id}".format(bill_of_sale_id=bill_of_sale.id), permanent=False)
-
 
 ### --- Webhooks ??? (Maybe, Future...)

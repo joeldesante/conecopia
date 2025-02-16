@@ -1,0 +1,29 @@
+{% extends "master.html" %}
+
+{% load static %}
+
+{% load humanize %}
+{% load filters %}
+
+{% block title %}
+    Settings - Conecopia
+{% endblock %}
+
+{% block content %}
+<div>
+    <h1 class="text-xl font-bold">Settings</h1>
+
+    <form>
+        {% for setting in settings %}
+            <div class="mt-4">
+                <h4 class="font-medium">{{ setting.key }}</h4>
+                <textarea>{{ setting.value }}</textarea>
+            </div>
+        {% endfor %}
+
+        <br>
+
+        <button class="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none">Save</button>
+    </form>
+</div>
+{% endblock %}

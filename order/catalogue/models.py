@@ -54,3 +54,7 @@ class Receipt(models.Model):
 class BillOfSale(models.Model):
     stripe_payment_intent = models.CharField(max_length=255, unique=True)
     serialized_shopping_cart = models.JSONField()
+
+class SiteSetting(models.Model):
+    key = models.CharField(max_length=100, unique=True)
+    value = models.JSONField(default=dict)
