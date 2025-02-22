@@ -4,6 +4,7 @@
     Pre-Order Gelato - Conecopia
 {% endblock %}
 
+{% load static %}
 {% load humanize %}
 {% load filters %}
 
@@ -42,8 +43,14 @@
                             </span>
                         {% endif %}
 
-                        <img 
-                            src="{{ product.thumbnail_url|default:"/static/NOIMAGE.png" }}" 
+                        <img
+                            
+                            {% if product.thumbnail %}
+                                src="{{ product.thumbnail.url }}" 
+                            {% else %}
+                                src="{% static "noimage.png" %}"
+                            {% endif %}
+
                             alt="One pint of {{ product.name }} gelato." 
                             class="w-full h-auto rounded"
                         />

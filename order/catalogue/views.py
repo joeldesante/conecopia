@@ -1,12 +1,17 @@
 from django.http import JsonResponse, HttpResponse, HttpResponseNotAllowed, HttpResponseBadRequest, HttpResponseForbidden
 from django.template import loader
 from django.shortcuts import redirect
-from .models import Product, BillOfSale, SiteSetting
+
+from .models import Product, ProductImage, BillOfSale, SiteSetting
+from .forms import ProductForm, MultipleProductImagesForm
+
 from django.conf import settings
 from nanoid import generate
 from .utils import *
 import stripe
 import os, json
+
+
 
 # Do this with an ENV or something
 stripe.api_key = os.environ['STRIPE_SECRET_KEY']
@@ -76,7 +81,8 @@ def index(request):
 
     shopping_cart = _get_cart_context(request)
 
-    products = Product.objects.all().values()
+    products = Product.objects.all()
+
     template = loader.get_template('order.html')
     context = {
         "products": products,
@@ -212,6 +218,31 @@ def upload_image(request):
     return JsonResponse({
         "path": "/static/uploads/{file}".format(file=file_name)
     })
+
+def upload_images(request):
+    if request.method == "POST":
+        product_form = ProductForm(request.POST)
+        image_form = MultipleProductImagesForm(request.POST, request.FILES)
+
+        if product_form.is_valid() and image_form.is_valid():
+            product = product_form.save()  # Save main model instance
+            
+            # Save multiple images
+            for img in request.FILES.getlist("images"):
+                ProductImage.objects.create(product=product, image=img)
+
+            return redirect("success_page")  # Redirect after successful upload
+    else:
+        product_form = ProductForm()
+        image_form = MultipleProductImagesForm()
+
+    template = loader.get_template('product.upload.html')
+    context = {
+        "product_form": product_form,
+        "image_form": image_form
+    }
+    return HttpResponse(template.render(context, request))
+
 
 def upload_thumbnail(request):
     if request.method != "POST":

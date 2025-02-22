@@ -4,7 +4,6 @@ import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
@@ -14,13 +13,12 @@ SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
-# Application definition
+ALLOWED_HOSTS = ["*"]
 
 INSTALLED_APPS = [
     'index',
     'catalogue',
+    'dashboard',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -102,17 +100,58 @@ USE_I18N = True
 
 USE_TZ = True
 
+# Static Files
+STORAGES = {
+    "default": {
+        "BACKEND": "storages.backends.s3.S3Storage",
+        "OPTIONS": {
+            "location": "dynamic",
+            "default_acl": "public-read",
+            "file_overwrite": True,
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/4.2/howto/static-files/
+            "access_key": os.environ.get("DIGITAL_OCEAN_ACCESS_KEY"),
+            "secret_key": os.environ.get("DIGITAL_OCEAN_SECRET_KEY"),
+            "bucket_name": os.environ.get("STORAGE_BUCKET_NAME"),
+            "endpoint_url": f"https://{os.environ.get('STORAGE_REGION')}.{os.environ.get('STORAGE_ENDPOINT_URI')}",
+            "custom_domain": f"{os.environ.get('STORAGE_BUCKET_NAME')}.{os.environ.get('STORAGE_REGION')}.{os.environ.get('STORAGE_ENDPOINT_URI')}",
+            
+            "object_parameters": {
+                "CacheControl": "max-age=86400"
+            }
+        }
+    },
+    "staticfiles": {
+        "BACKEND": "storages.backends.s3.S3Storage",
+        "OPTIONS": {
+            "location": "static",
+            "default_acl": "public-read",
+            "file_overwrite": True,
 
-STATIC_URL = 'static/'
+            "access_key": os.environ.get("DIGITAL_OCEAN_ACCESS_KEY"),
+            "secret_key": os.environ.get("DIGITAL_OCEAN_SECRET_KEY"),
+            "bucket_name": os.environ.get("STORAGE_BUCKET_NAME"),
+            "endpoint_url": f"https://{os.environ.get('STORAGE_REGION')}.{os.environ.get('STORAGE_ENDPOINT_URI')}",
+            "custom_domain": f"{os.environ.get('STORAGE_BUCKET_NAME')}.{os.environ.get('STORAGE_REGION')}.{os.environ.get('STORAGE_ENDPOINT_URI')}",
+            
+            "object_parameters": {
+                "CacheControl": "max-age=86400"
+            }
+        }
+    },
+}
+
+# DigitalOcean Spaces credentials
+_DEFAULT_OPTIONS = STORAGES["default"]["OPTIONS"]
+_STATICFILES_OPTIONS = STORAGES["staticfiles"]["OPTIONS"]
+
+MEDIA_URL = f"https://{_DEFAULT_OPTIONS['custom_domain']}/{_DEFAULT_OPTIONS['location']}/"
+STATIC_URL = f"https://{_STATICFILES_OPTIONS['custom_domain']}/{_STATICFILES_OPTIONS['location']}/"
 
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'static_root')
+#STATIC_ROOT = os.path.join(BASE_DIR, 'static_root')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

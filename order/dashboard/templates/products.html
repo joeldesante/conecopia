@@ -1,0 +1,83 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products</title>
+
+    <link rel="stylesheet" href="{% static 'master.css' %}">
+
+</head>
+<body>
+    <div class="m-2">
+    <h1 class="text-xl font-bold">All Products</h1>
+
+    <div class="p-2">
+        <small class="color-neutral-700">* <strong>Reminder</strong>, all item prices are listed here in US cents ( US&cent; ) because that is how prices are represented in the API. However, all prices will be formatted as US dollars ( US$ ) for customers.</small>
+    </div>
+    <form method="post" class="">
+        {% csrf_token %}
+        {{ formset.management_form }}
+
+        <button type="submit">Save Changes</button>
+
+        <div class="flex flex-col">
+            <div class="-m-1.5 overflow-x-auto">
+                <div class="p-1.5 min-w-full inline-block align-middle">
+                <div class="border rounded-lg overflow-hidden">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th scope="col" class="px-2 py-3 text-start text-xs font-medium text-gray-500 uppercase">Product Name</th>
+                                <th scope="col" class="px-2 py-3 text-start text-xs font-medium text-gray-500 uppercase">In Stock</th>
+                                <th scope="col" class="px-2 py-3 text-start text-xs font-medium text-gray-500 uppercase">Price &cent;</th>
+                                <th scope="col" class="px-2 py-3 text-start text-xs font-medium text-gray-500 uppercase">Available</th>
+                                <th scope="col" class="px-2 py-3 text-start text-xs font-medium text-gray-500 uppercase">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200">
+                            {% for form in formset %}
+                                <tr>
+                                    <td class="px-2 py-4 whitespace-nowrap text-sm font-medium text-gray-800 flex items-center gap-4">
+                                        {{ form.id }}
+
+                                        <div class="border rounded overflow-hidden">
+                                            {% if form.instance.thumbnail %}
+                                                <img src="{{ form.instance.thumbnail.url }}" alt="" width="50px" height="50px">
+                                            {% else %}
+                                                <img src="{% static 'noimage.png' %}" alt="" width="50px" height="50px">
+                                            {% endif %}
+                                        </div>
+                                        
+                                        {{ form.instance.name }}
+                                    </td>
+                                    
+                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-800">
+                                        {{ form.quantity }}
+                                    </td>
+
+                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-800">
+                                        {{ form.price }} &cent;
+                                    </td>
+
+                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-800">
+                                        {{ form.available }}
+                                    </td>
+
+                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-800">
+                                        <a href="/products/{{ form.instance.id }}/edit">Edit</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                </div>
+            </div>
+        </div>
+    </form>
+    </div>
+</body>
+</html>

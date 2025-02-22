@@ -815,6 +815,10 @@ select{
   z-index: 80;
 }
 
+.-m-1\.5{
+  margin: -0.375rem;
+}
+
 .m-1{
   margin: 0.25rem;
 }
@@ -1057,6 +1061,10 @@ select{
   min-width: 34rem;
 }
 
+.min-w-full{
+  min-width: 100%;
+}
+
 .max-w-\[24rem\]{
   max-width: 24rem;
 }
@@ -1211,12 +1219,21 @@ select{
   border-bottom-width: calc(1px * var(--tw-divide-y-reverse));
 }
 
+.divide-gray-200 > :not([hidden]) ~ :not([hidden]){
+  --tw-divide-opacity: 1;
+  border-color: rgb(229 231 235 / var(--tw-divide-opacity, 1));
+}
+
 .self-center{
   align-self: center;
 }
 
 .overflow-hidden{
   overflow: hidden;
+}
+
+.overflow-x-auto{
+  overflow-x: auto;
 }
 
 .overflow-y-auto{
@@ -1335,6 +1352,11 @@ select{
   background-color: rgb(209 213 219 / var(--tw-bg-opacity, 1));
 }
 
+.bg-gray-50{
+  --tw-bg-opacity: 1;
+  background-color: rgb(249 250 251 / var(--tw-bg-opacity, 1));
+}
+
 .bg-gray-800{
   --tw-bg-opacity: 1;
   background-color: rgb(31 41 55 / var(--tw-bg-opacity, 1));
@@ -1373,20 +1395,20 @@ select{
   background-image: linear-gradient(60deg, rgb(247, 149, 51), rgb(243, 112, 85), rgb(239, 78, 123), rgb(161, 102, 171), rgb(80, 115, 184), rgb(16, 152, 173), rgb(7, 179, 155), rgb(111, 186, 130));
 }
 
-.bg-\[url\(\"\/static\/scoops\.png\"\)\]{
-  background-image: url("/static/scoops.png");
+.bg-\[url\(\"\/conecopia\/static\/slide1\.jpg\"\)\]{
+  background-image: url("/conecopia/static/slide1.jpg");
 }
 
-.bg-\[url\(\"\/static\/slide1\.jpg\"\)\]{
-  background-image: url("/static/slide1.jpg");
+.bg-\[url\(\"\/conecopia\/static\/slide2\.jpg\"\)\]{
+  background-image: url("/conecopia/static/slide2.jpg");
 }
 
-.bg-\[url\(\"\/static\/slide2\.jpg\"\)\]{
-  background-image: url("/static/slide2.jpg");
+.bg-\[url\(\"\/conecopia\/static\/slide3\.jpg\"\)\]{
+  background-image: url("/conecopia/static/slide3.jpg");
 }
 
-.bg-\[url\(\"\/static\/slide3\.jpg\"\)\]{
-  background-image: url("/static/slide3.jpg");
+.bg-\[url\(\"https\:\/\/desante\.nyc3\.cdn\.digitaloceanspaces\.com\/conecopia\/static\/scoops\.png\"\)\]{
+  background-image: url("https://desante.nyc3.cdn.digitaloceanspaces.com/conecopia/static/scoops.png");
 }
 
 .bg-\[length\:200px_200px\]{
@@ -1407,6 +1429,10 @@ select{
 
 .p-1{
   padding: 0.25rem;
+}
+
+.p-1\.5{
+  padding: 0.375rem;
 }
 
 .p-2{
@@ -1463,6 +1489,11 @@ select{
 .py-3{
   padding-top: 0.75rem;
   padding-bottom: 0.75rem;
+}
+
+.py-4{
+  padding-top: 1rem;
+  padding-bottom: 1rem;
 }
 
 .pb-3{
@@ -1548,6 +1579,10 @@ select{
 
 .font-semibold{
   font-weight: 600;
+}
+
+.uppercase{
+  text-transform: uppercase;
 }
 
 .text-black{
