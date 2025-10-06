@@ -2,7 +2,8 @@ from django.http import JsonResponse, HttpResponse, HttpResponseNotAllowed, Http
 from django.template import loader
 from django.shortcuts import redirect
 
-from .models import Product, ProductImage, BillOfSale, SiteSetting
+from dashboard.models import GlobalSiteSetting
+from .models import Product, ProductImage, BillOfSale
 from .forms import ProductForm, MultipleProductImagesForm
 
 from django.conf import settings
@@ -10,7 +11,6 @@ from nanoid import generate
 from .utils import *
 import stripe
 import os, json
-
 
 
 # Do this with an ENV or something
@@ -185,7 +185,7 @@ def receipt(request):
     return HttpResponse(template.render(context, request))
 
 def settings(request):
-    settings = SiteSetting.objects.all()
+    settings = GlobalSiteSetting.objects.all()
     template = loader.get_template('settings.html')
     context = {
         "settings": settings,
@@ -376,24 +376,23 @@ def transaction_processed(request):
     # 3. Clear the shopping cart!!! End the session.
     request.session["shopping_cart"] = {}
 
-
     # 4. Send an email notification to the customer and the vendor via MailGun or Stripe.
     #       And, If possible send a text message to the vendor to notify them of a sale.
+    # email_sender = GlobalSiteSetting.objects.get(key="EMAIL_SENDER").value
+    email_message = GlobalSiteSetting.objects.get(key="EMAIL_TEMPLATE").value
+    email_subject = GlobalSiteSetting.objects.get(key="EMAIL_SUBJECT").value
+    # email_cc = GlobalSiteSetting.objects.get(key="EMAIL_CC").value
 
-    email_address = SiteSetting.objects.get(key="email_send_from")
-    email_message = SiteSetting.objects.get(key="email_template")
-    email_sender_name = SiteSetting.objects.get(key="email_sender_name")
-    email_subject = SiteSetting.objects.get(key="email_subject")
-
-    email_message = "THE RECEIPT DATA\n{email_message}".format(email_message = email_message)
+    rendered_receipt = _get_receipt_context(bill_of_sale.serialized_shopping_cart)
+    email_message = generate_email(rendered_receipt['items'], rendered_receipt['total_order_price'], email_message)
 
     send_email(
         to_address = "joeldesante@gmail.com", 
-        from_adress = "{sender_name} <{email_address}>".format(sender_name = email_sender_name, email_address = email_address),
+        from_adress = "receipts@conecopia.com",
+        from_name= "Tony @ Conecopia Gelato",
         subject = email_subject,
         message = email_message
     )
-
 
     # 5. Redirect the user to the reciept page and display the order details.
     return redirect("/order/receipt?id={bill_of_sale_id}".format(bill_of_sale_id=bill_of_sale.id), permanent=False)

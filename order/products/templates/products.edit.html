@@ -1,0 +1,39 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form method="POST">
+        {% csrf_token %}
+
+        {{ form }}
+
+        {{ images.management_form }}
+        
+        <hr />
+        
+        {% for row in images %}
+            {{ row.id }}
+            {% if row.instance.pk %}
+                {# Show existing images, but don't allow modification #}
+                <img src="{{ row.instance.image.url }}" height="200px" width="auto" alt="Existing Image">
+                {{ row.DELETE }} {# Allow deletion of existing images #}
+            {% else %}
+                {# This is the extra form for a new image upload #}
+                <label>Upload a new image:</label>
+                {{ row.image }}
+            {% endif %}
+            
+            <br><br>
+        {% endfor %}
+
+        <button type="submit">Save</button>
+    
+    </form>
+</body>
+</html>
