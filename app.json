@@ -1,0 +1,9 @@
+{
+  "name": "conecopia",
+  "description": "Django app for Conecopia",
+  "scripts": {
+    "dokku": {
+      "predeploy": "python order/manage.py collectstatic --noinput && python order/manage.py migrate --noinput"
+    }
+  }
+}

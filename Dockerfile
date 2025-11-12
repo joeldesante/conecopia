@@ -26,16 +26,19 @@ RUN pip install --upgrade pip && \
 # Copy project files
 COPY . .
 
-# Collect static files
-RUN python manage.py collectstatic --noinput
+# Change to the Django project directory
+WORKDIR /app/order
+
+# Skip collectstatic during build - we'll do it after deployment with env vars
+# RUN python manage.py collectstatic --noinput
 
 # Create a non-root user
 RUN useradd -m -u 1000 appuser && \
     chown -R appuser:appuser /app
 USER appuser
 
-# Expose port
-EXPOSE 5000
+# Make sure we're in the order directory
+WORKDIR /app/order
 
-# Run gunicorn
-CMD gunicorn --bind 0.0.0.0:$PORT --workers 3 --timeout 120 myproject.wsgi:application
+# Run gunicorn (adjust 'order.wsgi' to match your wsgi module path)
+CMD gunicorn --bind 0.0.0.0:$PORT --workers 3 --timeout 120 order.wsgi:application

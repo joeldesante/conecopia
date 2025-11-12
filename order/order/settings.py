@@ -2,6 +2,17 @@ from pathlib import Path
 import os
 import dj_database_url
 
+REQUIRED_ENV_VARS = [
+    'DJANGO_SECRET_KEY',
+    'DIGITAL_OCEAN_ACCESS_KEY',
+    'DIGITAL_OCEAN_SECRET_KEY',
+    'STORAGE_BUCKET_NAME',
+]
+
+for var in REQUIRED_ENV_VARS:
+    if not os.environ.get(var):
+        raise ValueError(f"Missing required environment variable: {var}")
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
