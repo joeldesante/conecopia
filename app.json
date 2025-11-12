@@ -3,7 +3,7 @@
   "description": "Django app for Conecopia",
   "scripts": {
     "dokku": {
-      "predeploy": "cd order && python manage.py collectstatic --noinput && python manage.py migrate --noinput"
+      "predeploy": "python manage.py collectstatic --noinput && python manage.py migrate --noinput"
     }
   }
 }
