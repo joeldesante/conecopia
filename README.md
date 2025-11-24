@@ -6,29 +6,28 @@ This is the Conecopia Gelato e-commerce platform. This platform is meant to repl
 
 ## Enviroment Variable Settings
 ```bash
-# General
-DJANGO_SECRET_KEY=""        # Please set to a unique key that can be used with Django for hashing
+DJANGO_SECRET_KEY=""
 
 # Database
-DATABASE_USERNAME=""
-DATABASE_PASSWORD=""
-DATABASE_HOST=""
+DATABASE_URL=""
 
 # Mailgun
-MAILGUN_API_KEY=""
-MAILGUN_API_URL=""      # Every email registered with Mailgun has a API URL associated with it.
+MAILJET_API_KEY=""
+MAILJET_SECRET_KEY=""
 
-# Object Storage (S3 compatible)
-# We use digitalocean but AWS or any other S3 compatible service should work here.
+# Object Storage
 DIGITAL_OCEAN_ACCESS_KEY=""
 DIGITAL_OCEAN_SECRET_KEY=""
-STORAGE_BUCKET_NAME = ""    # The name of the bucket you want to use
-STORAGE_REGION = "nyc3"     # The region code in the buckets URL (ex. nyc3)
-STORAGE_ENDPOINT_URI = "digitaloceanspaces.com"
+STORAGE_BUCKET_NAME=""
+STORAGE_REGION="nyc3"
+STORAGE_ENDPOINT_URI="digitaloceanspaces.com"
 
 # Stripe Payment Processor
 STRIPE_PUBLIC_KEY=""
 STRIPE_SECRET_KEY=""
+
+DEBUG=False
+ALLOWED_HOSTS="conecopia.com,conecopia.trysous.co"
 ```
 
 ## Technical Stack
