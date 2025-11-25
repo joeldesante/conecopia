@@ -27,6 +27,17 @@ DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '*').split(',')
 
+CORS_ALLOWED_ORIGINS = [
+    "https://cnecopia.trysous.co",
+    "https://conecopia.com"
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://conecopia.trysous.co",
+    "https://conecopia.com",
+]
+
+
 INSTALLED_APPS = [
     'index',
     'catalogue',
